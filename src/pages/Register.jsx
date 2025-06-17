@@ -1,5 +1,7 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // 👈 Importa o hook
+import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+
 import api from '../services/api';
 
 export default function Register() {
@@ -37,7 +39,7 @@ export default function Register() {
         onChange={e => setForm({ ...form, senha: e.target.value })}
       />
       <button type="submit">Registrar</button>
-      <p>Já tem uma conta? Acesse <a href="/login">Login</a></p>
+      <p>Já tem uma conta? Acesse <Link href="/login">Login</Link></p>
     </form>
   );
 }
