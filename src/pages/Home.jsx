@@ -52,9 +52,9 @@ export default function Home() {
   };
 
   const logout = () => {
-  localStorage.removeItem('token'); // remove o JWT
-  navigate('/login'); // redireciona para a tela de login
-};
+    localStorage.removeItem('token'); // remove o JWT
+    navigate('/login'); // redireciona para a tela de login
+  };
 
   useEffect(() => {
     carregar();
@@ -79,12 +79,15 @@ export default function Home() {
       </form>
 
       <h3>Buscar mensagem por ID</h3>
-      <input
-        value={buscaId}
-        onChange={e => setBuscaId(e.target.value)}
-        placeholder="ID da mensagem"
-      />
-      <button onClick={buscarPorId}>Buscar</button>
+
+      <div class="space">
+        <input
+          value={buscaId}
+          onChange={e => setBuscaId(e.target.value)}
+          placeholder="ID da mensagem"
+        />
+        <button onClick={buscarPorId}>Buscar</button>
+      </div>
 
       {mensagemEncontrada && (
         <p>
@@ -98,8 +101,10 @@ export default function Home() {
         {mensagens.map(m => (
           <li key={m.id}>
             {m.conteudo} — por {m.autor.nome}
-            <button onClick={() => editar(m)}>Editar</button>
-            <button onClick={() => excluir(m.id)}>Excluir</button>
+            <div>
+              <button onClick={() => editar(m)}>Editar</button>
+              <button onClick={() => excluir(m.id)}>Excluir</button>
+            </div>
           </li>
         ))}
       </ul>
