@@ -12,7 +12,7 @@ export default function Register() {
     try {
       await api.post('/usuarios', form);
       alert('Usuário criado com sucesso!');
-      navigate('/login');
+      navigate('/');
     } catch (err) {
       alert('Erro ao cadastrar');
     }
