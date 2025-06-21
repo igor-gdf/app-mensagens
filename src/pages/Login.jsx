@@ -13,7 +13,7 @@ export default function Login() {
         try {
             const res = await api.post('/auth/login', { email, senha });
             localStorage.setItem('token', res.data.token);
-            navigate('/home');
+            navigate('/');
         } catch (err) {
             alert('Login falhou!');
         }
