@@ -38,7 +38,7 @@ export default function Register() {
         onChange={e => setForm({ ...form, senha: e.target.value })}
       />
       <button type="submit">Registrar</button>
-      <p>Já tem sua conta? Acesse <Link to="/login">Login</Link></p>
+      <p>Já tem sua conta? Acesse <Link to="/">Login</Link></p>
     </form>
   );
 }
