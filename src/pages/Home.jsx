@@ -80,7 +80,7 @@ export default function Home() {
 
       <h3>Buscar mensagem por ID</h3>
 
-      <div class="space">
+      <div className="space">
         <input
           value={buscaId}
           onChange={e => setBuscaId(e.target.value)}

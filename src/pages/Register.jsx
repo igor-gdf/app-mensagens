@@ -14,8 +14,15 @@ export default function Register() {
       alert('Usuário criado com sucesso!');
       navigate('/login');
     } catch (err) {
-      alert('Erro ao cadastrar');
+      if (err.response && err.response.status === 400) {
+        alert('Erro: Verifique os campos. A senha deve atender aos requisitos.');
+      } else {
+        alert('Erro ao cadastrar usuário.');
+      }
     }
+
+
+
   };
 
   return (
@@ -37,6 +44,9 @@ export default function Register() {
         value={form.senha}
         onChange={e => setForm({ ...form, senha: e.target.value })}
       />
+      <small style={{ fontSize: '0.8rem', color: '#666' }}>
+        A senha deve conter 8 caracteres, incluindo: número, letra maiúscula, letra minúscula e símbolo (@!%*?&).
+      </small>
       <button type="submit">Registrar</button>
       <p>Já tem sua conta? Acesse <Link to="/login">Login</Link></p>
     </form>
