@@ -1,9 +1,13 @@
 <template>
-  <Navbar />
+  <NavBar v-if="mostrarNavBar" />
   <router-view />
 </template>
 
-<script>
-import Navbar from './components/Navbar.vue';
-export default { components: { Navbar } };
+<script setup>
+import { useRoute } from 'vue-router';
+import { computed } from 'vue';
+import NavBar from './components/NavBar.vue';
+
+const route = useRoute();
+const mostrarNavBar = computed(() => !['/login', '/register'].includes(route.path));
 </script>

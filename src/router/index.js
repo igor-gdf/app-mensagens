@@ -1,26 +1,30 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import Home from '../views/Home.vue';
-import Login from '../views/Login.vue';
-import NovaMensagem from '../views/NovaMensagem.vue';
+import LoginPage from '../pages/LoginPage.vue';
+import RegisterPage from '../pages/RegisterPage.vue';
+import HomePage from '../pages/HomePage.vue';
 
 const routes = [
-  { path: '/', name: 'Home', component: Home },
-  { path: '/login', name: 'Login', component: Login },
-  { path: '/nova', name: 'NovaMensagem', component: NovaMensagem, meta: { requiresAuth: true } }
+  { path: '/', component: HomePage },
+  { path: '/login', component: LoginPage },
+  { path: '/register', component: RegisterPage },
 ];
 
 const router = createRouter({
   history: createWebHistory(),
-  routes
+  routes,
 });
 
 router.beforeEach((to, from, next) => {
-  const token = localStorage.getItem('token');
-  if (to.meta.requiresAuth && !token) {
-    next('/login');
-  } else {
-    next();
+  const publicPages = ['/login', '/register'];
+  const authRequired = !publicPages.includes(to.path);
+  const loggedIn = localStorage.getItem('token');
+
+  if (authRequired && !loggedIn) {
+    return next('/login');
   }
+
+  next();
 });
+
 
 export default router;
