@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 export default function Home() {
   const [mensagens, setMensagens] = useState([]);
   const [nova, setNova] = useState('');
+  const [novoTitulo, setNovoTitulo] = useState('');
   const [editandoId, setEditandoId] = useState(null);
   const [buscaId, setBuscaId] = useState('');
   const [mensagemEncontrada, setMensagemEncontrada] = useState(null);
@@ -17,15 +18,16 @@ export default function Home() {
 
   const enviar = async (e) => {
     e.preventDefault();
-    if (!nova.trim()) return;
+    if (!novoTitulo.trim() && !nova.trim()) return;
 
     if (editandoId) {
-      await api.put(`/mensagens/${editandoId}`, { conteudo: nova });
+      await api.put(`/mensagens/${editandoId}`, { titulo: novoTitulo, conteudo: nova });
       setEditandoId(null);
     } else {
-      await api.post('/mensagens', { conteudo: nova });
+      await api.post('/mensagens', { titulo: novoTitulo, conteudo: nova });
     }
 
+    setNovoTitulo('');
     setNova('');
     carregar();
   };
@@ -37,7 +39,8 @@ export default function Home() {
 
   const editar = (msg) => {
     setEditandoId(msg.id);
-    setNova(msg.conteudo);
+    setNova(msg.conteudo || '');
+    setNovoTitulo(msg.titulo || '');
   };
 
   const buscarPorId = async () => {
@@ -66,13 +69,18 @@ export default function Home() {
 
       <form onSubmit={enviar}>
         <input
+          value={novoTitulo}
+          onChange={e => setNovoTitulo(e.target.value)}
+          placeholder={editandoId ? 'Editando título...' : 'Título'}
+        />
+        <input
           value={nova}
           onChange={e => setNova(e.target.value)}
           placeholder={editandoId ? 'Editando mensagem...' : 'Nova mensagem'}
         />
         <button type="submit">{editandoId ? 'Salvar edição' : 'Enviar'}</button>
         {editandoId && (
-          <button type="button" onClick={() => { setEditandoId(null); setNova(''); }}>
+          <button type="button" onClick={() => { setEditandoId(null); setNova(''); setNovoTitulo(''); }}>
             Cancelar
           </button>
         )}
@@ -92,15 +100,17 @@ export default function Home() {
       {mensagemEncontrada && (
         <p>
           <strong>ID:</strong> {mensagemEncontrada.id}<br />
+          <strong>Título:</strong> {mensagemEncontrada.titulo}<br />
           <strong>Conteúdo:</strong> {mensagemEncontrada.conteudo}<br />
-          <strong>Autor:</strong> {mensagemEncontrada.autor?.nome}
+          <strong>Autor:</strong> {mensagemEncontrada.autor?.nome}<br />
+          <strong>Editado:</strong> {mensagemEncontrada.editado ? 'Sim' : 'Não'}
         </p>
       )}
 
       <ul>
         {mensagens.map(m => (
           <li key={m.id}>
-            {m.conteudo} — por {m.autor.nome}
+            <strong>{m.titulo}</strong>: {m.conteudo} — por {m.autor?.nome}
             <div>
               <button onClick={() => editar(m)}>Editar</button>
               <button onClick={() => excluir(m.id)}>Excluir</button>
