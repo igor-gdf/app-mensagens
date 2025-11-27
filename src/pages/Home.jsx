@@ -12,29 +12,46 @@ export default function Home() {
   const navigate = useNavigate();
 
   const carregar = async () => {
-    const res = await api.get('/mensagens');
-    setMensagens(res.data);
+    try {
+      const res = await api.get('/mensagens');
+      setMensagens(res.data);
+    } catch (err) {
+      if (err?.response?.status === 401) return;
+      console.error('Erro ao carregar mensagens:', err);
+      alert('Erro ao carregar mensagens.');
+    }
   };
 
   const enviar = async (e) => {
     e.preventDefault();
     if (!novoTitulo.trim() && !nova.trim()) return;
+    try {
+      if (editandoId) {
+        await api.put(`/mensagens/${editandoId}`, { titulo: novoTitulo, conteudo: nova });
+        setEditandoId(null);
+      } else {
+        await api.post('/mensagens', { titulo: novoTitulo, conteudo: nova });
+      }
 
-    if (editandoId) {
-      await api.put(`/mensagens/${editandoId}`, { titulo: novoTitulo, conteudo: nova });
-      setEditandoId(null);
-    } else {
-      await api.post('/mensagens', { titulo: novoTitulo, conteudo: nova });
+      setNovoTitulo('');
+      setNova('');
+      carregar();
+    } catch (err) {
+      if (err?.response?.status === 401) return;
+      console.error('Erro ao enviar mensagem:', err);
+      alert(err?.response?.data || 'Erro ao enviar mensagem.');
     }
-
-    setNovoTitulo('');
-    setNova('');
-    carregar();
   };
 
   const excluir = async (id) => {
-    await api.delete(`/mensagens/${id}`);
-    carregar();
+    try {
+      await api.delete(`/mensagens/${id}`);
+      carregar();
+    } catch (err) {
+      if (err?.response?.status === 401) return;
+      console.error('Erro ao excluir mensagem:', err);
+      alert('Erro ao excluir mensagem.');
+    }
   };
 
   const editar = (msg) => {
