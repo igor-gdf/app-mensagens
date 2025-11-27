@@ -7,7 +7,15 @@ const api = axios.create({
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   config.headers = config.headers || {};
-  if (token) config.headers['Authorization'] = `Bearer ${token}`;
+  if (token) {
+    config.headers['Authorization'] = `Bearer ${token}`;
+    try {
+      // mostra apenas prefixo para ajudar depuração sem vazar todo token
+      console.debug('API: enviando token, prefixo=', token.slice(0, 8));
+    } catch (e) {}
+  } else {
+    console.debug('API: nenhum token no localStorage');
+  }
   return config;
 });
 

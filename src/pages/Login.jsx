@@ -12,8 +12,17 @@ export default function Login() {
         e.preventDefault();
         try {
             const res = await api.post('/auth/login', { email, senha });
-            localStorage.setItem('token', res.data.token);
-            navigate('/');
+            // compatibilidade com diferentes formatos de resposta da API
+            // pode retornar { token: '...', ... } ou { access_token: '...' } ou a string do próprio token
+            const token = res?.data?.token || res?.data?.access_token || (typeof res?.data === 'string' ? res.data : null);
+            if (token) {
+                localStorage.setItem('token', token);
+                navigate('/');
+            } else {
+                // fallback: salva o objeto inteiro como string (apenas em último caso)
+                localStorage.setItem('token', JSON.stringify(res.data));
+                navigate('/');
+            }
         } catch (err) {
             alert('Login falhou!');
         }
